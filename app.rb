@@ -1,39 +1,33 @@
-require 'sinatra/base'
+require 'sinatra'
 require 'sinatra/config_file'
-require 'pony'
+require 'sinatra/json'
 require 'json'
+require 'pony'
 
-class SinatraMailroom < Sinatra::Base
-	register Sinatra::ConfigFile
+config_file 'config.yml'
 
-	config_file 'config.yml'
+get '/ping' do
+	json pong: true, time: Time.now.to_s
+end
 
-	get '/ping' do
-		content_type :json
-		{pong: true, time: Time.now.to_s}.to_json
-	end
+post '/mail' do
+	destination = params[:destination]
 
-	post '/mail' do
-		Pony.mail(
-		{
-			:from => params[:name],
-	    :to => 'myemailaddress',
-	    :subject => params[:name] + "has contacted you via the Website",
-	    :body => params[:comment],
+	Pony.mail(
+	{
+		:from => params[:sender],
+	    :to => destination,
+	    :subject => 'Request From: ' + params[:name],
+	    :body => params[:body],
 	    :via => :smtp,
 	    :via_options => {
-	     :address              => 'smtp.gmail.com',
-	     :port                 => '587',
-	     :enable_starttls_auto => true,
-	     :user_name            => 'myemailaddress',
-	     :password             => 'mypassword',
-	     :authentication       => :plain, 
-	     :domain               => "localhost.localdomain" 
-			}
-		})
-			    
-
-   end
-	end
-
+	     :address              => settings.smtp.address,
+	     :port                 => settings.smtp.port,
+	     :enable_starttls_auto => settings.smtp.starttls_auto,
+	     :user_name            => settings.smtp.user,
+	     :password             => settings.smtp.password,
+	     :authentication       => settings.smtp.auth_type, 
+	     :domain               => settings.smtp.domain 
+		}
+	})	
 end

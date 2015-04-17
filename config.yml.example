@@ -1,0 +1,14 @@
+destination_whitelist:
+	- example@some.tld
+
+smtp:
+	address: smtp.gmail.com
+	port: 587
+	user: username
+	password: password 
+	auth_type: 
+	domain: smtp.gmail.com
+	starttls_auto: true
+
+sender_blacklist:
+	- a_bad_man@example.com
