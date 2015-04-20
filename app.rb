@@ -14,7 +14,7 @@ end
 
 get '/' do
 	status 200
-	text 'nothing to see here, move along'
+	'nothing to see here, move along'
 end
 
 get '/ping' do
