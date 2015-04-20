@@ -1,2 +1,2 @@
 require "#{File.dirname(__FILE__)}/app"
-run SinatraMailroom
+run Sinatra::Application
