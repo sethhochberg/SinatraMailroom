@@ -33,13 +33,13 @@ post '/mail' do
 	end
 
 	ses = AWS::SES::Base.new(
-	  :access_key_id     => settings.ses['key'], 
-	  :secret_access_key => settings.ses['token'],
+	  :access_key_id     => ENV['SES_KEY_ID'], 
+	  :secret_access_key => ENV['SES_KEY'],
 	  :server => settings.ses['server']
 	)
 
 	ses.send_email(
-    :to        => Array.wrap(destination)
+    :to        => Array.wrap(destination),
     :source    => sender,
     :subject   => settings.subject_prepend + ' : ' + name,
     :text_body => name + ' : ' + message
