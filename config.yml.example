@@ -1,14 +1,12 @@
 destination_whitelist:
-	- example@some.tld
-
-smtp:
-	address: smtp.gmail.com
-	port: 587
-	user: username
-	password: password 
-	auth_type: 
-	domain: smtp.gmail.com
-	starttls_auto: true
-
+- example@some.tld
+ses:
+ server: email.us-east-1.amazonaws.com
+ key: AKIAwhatever
+ token: thisisateoken
 sender_blacklist:
-	- a_bad_man@example.com
+- a_bad_man@example.com
+success_message: 'Your email has been sent.'
+fail_message: 'Your message could not be send due to an email server error. Please try again later.'
+unprocessable_message: 'A required value was missing. You must supply an email address, name, and message.'
+subject_prepend: 'Message from'
