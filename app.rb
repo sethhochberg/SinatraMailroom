@@ -6,9 +6,11 @@ require 'aws/ses'
 
 config_file 'config.yml'
 
-configure do
-  set :protection, :origin_whitelist => settings.origin_whitelist
-end
+set :allow_origin, :any
+set :allow_methods, [:get, :post, :options]
+set :allow_credentials, true
+set :max_age, "1728000"
+set :expose_headers, ['Content-Type']
 
 class ParamsMissingError
 end
@@ -61,4 +63,10 @@ end
 error MailSendError do
   status 503
   json error: settings.fail_message
+end
+
+options "*" do
+  response.headers["Allow"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+  200
 end
