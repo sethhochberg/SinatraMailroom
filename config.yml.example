@@ -1,5 +1,7 @@
 destination_whitelist:
 - example@some.tld
+origin_whitelist:
+- localhost
 ses:
  server: email.us-east-1.amazonaws.com
  key: AKIAwhatever
