@@ -7,4 +7,9 @@ gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'json'
 gem 'aws-ses'
-gem 'sinatra-cross_origin'
+gem 'activesupport'
+
+group :development do
+	gem 'better_errors'
+	gem 'binding_of_caller'
+end

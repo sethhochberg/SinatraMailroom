@@ -3,19 +3,23 @@ require 'sinatra/config_file'
 require 'sinatra/json'
 require 'json'
 require 'aws/ses'
+require 'better_errors'
+require 'active_support/core_ext/array'
+require 'active_support/inflector'
 
 config_file 'config.yml'
 
-set :allow_origin, :any
-set :allow_methods, [:get, :post, :options]
-set :allow_credentials, true
-set :max_age, "1728000"
-set :expose_headers, ['Content-Type']
-
-class ParamsMissingError
+configure :development do
+  use BetterErrors::Middleware
+  BetterErrors.application_root = __dir__
 end
 
-class MailSendError
+set :show_exceptions, false
+
+class ParamsMissingError < StandardError
+end
+
+class MailSendError < StandardError
 end
 
 get '/' do
@@ -29,10 +33,17 @@ get '/ping' do
 end
 
 post '/mail' do
-  destination = params[:destination]
-  name 				= params[:name]
+  headers['Access-Control-Allow-Origin'] = '*'
+  headers['Access-Control-Request-Method'] = '*'
+
+  destination = params[:destination] || settings.default_destination
+  name 				= params[:name] || params[:message][:'full-name']
   message 		= params[:message]
-  sender      = params[:sender]
+  sender      = params[:sender] || settings.default_sender
+
+  if message.kind_of?(Hash)
+    message = message.map {|k,v| "#{k.titleize}: #{v}"}.join("\r\n\n")
+  end
 
   unless destination && name && message && sender
     raise ParamsMissingError
@@ -45,10 +56,10 @@ post '/mail' do
   )
 
   ses.send_email(
-    to:        [destination],
+    to:        Array.wrap(destination),
     source:    sender,
     subject:   settings.subject_prepend + ' : ' + name,
-    text_body: name + ' : ' + message
+    text_body: name + ": \r\n" + message
   )
 
   status 200
@@ -65,8 +76,7 @@ error MailSendError do
   json error: settings.fail_message
 end
 
-options "*" do
-  response.headers["Allow"] = "HEAD,GET,PUT,POST,DELETE,OPTIONS"
-  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
-  200
+error do
+  status 500
+  json error: 'An internal server error occured. Please try again later.'
 end
