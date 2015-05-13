@@ -3,16 +3,10 @@ require 'sinatra/config_file'
 require 'sinatra/json'
 require 'json'
 require 'aws/ses'
-require 'better_errors'
 require 'active_support/core_ext/array'
 require 'active_support/inflector'
 
 config_file 'config.yml'
-
-configure :development do
-  use BetterErrors::Middleware
-  BetterErrors.application_root = __dir__
-end
 
 set :show_exceptions, false
 
