@@ -51,6 +51,7 @@ DEPENDENCIES
   activesupport
   aws-ses
   json
+  minitest
   puma
   sinatra
   sinatra-contrib

@@ -31,8 +31,8 @@ post '/mail' do
   headers['Access-Control-Request-Method'] = '*'
 
   destination = params[:destination] || settings.default_destination
-  name 				= params[:name] || params[:message][:'full-name']
-  message 		= params[:message]
+  name        = params[:name] || params[:message][:'full-name']
+  message     = params[:message]
   sender      = params[:sender] || settings.default_sender
 
   if message.kind_of?(Hash)

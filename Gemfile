@@ -6,3 +6,7 @@ gem 'sinatra-contrib'
 gem 'json'
 gem 'aws-ses'
 gem 'activesupport'
+
+group :test do
+  gem 'minitest'
+end
